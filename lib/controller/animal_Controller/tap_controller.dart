@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 class MyController extends ChangeNotifier {
   ValueNotifier<bool> isAlgContainerVisible = ValueNotifier(false);
-  var isIconVisible = true.obs;
+  ValueNotifier<bool> isIconVisible = ValueNotifier(false);
 
 
   final ValueNotifier<bool> _languageChangedNotifier = ValueNotifier<bool>(false);
 
-  final ValueNotifier<bool> refreshNotifier = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> _refreshNotifier = ValueNotifier<bool>(false);
+
+  ValueNotifier<bool> get refresshNotifier => _refreshNotifier;
 
   ValueNotifier<bool> get languageChangedNotifier => _languageChangedNotifier;
 
@@ -23,7 +24,6 @@ class MyController extends ChangeNotifier {
   }
 
   void toggletherefresh() {
-    refreshNotifier.value = !refreshNotifier.value;
-    notifyListeners();
+  _refreshNotifier.value = !_refreshNotifier.value;
   }
 }

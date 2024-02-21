@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,6 +30,7 @@ class _AnimalSelectState extends State<AnimalSelect> {
   final RxBool isSoundOn = true.obs;
   final RxBool isNotificationOn = true.obs;
   bool isSoundPlaying = false;
+  late AssetsAudioPlayer _assetsAudioPlayer;
   late ADSHelp adsInstance;
   List<Map<String, dynamic>> catImage = [];
   final AdManager _adManager = AdManager();
@@ -52,21 +54,23 @@ class _AnimalSelectState extends State<AnimalSelect> {
     adsInstance = ADSHelp.AdsHelp;
     _adManager.loadInterstitialAd();
     CatData();
+    _assetsAudioPlayer = AssetsAudioPlayer();
+    _assetsAudioPlayer.open(
+      Audio("assets/music/gameappsound.mp3"),
+      autoStart: true,
+    );
+    _assetsAudioPlayer.play();
   }
 
   Future<void> _loadAd() async {
-    // Get an AnchoredAdaptiveBannerAdSize before loading the ad.
     final AnchoredAdaptiveBannerAdSize? size =
     await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
         MediaQuery.of(context).size.width.truncate());
-
     if (size == null) {
       print('Unable to get height of anchored banner.');
       return;
     }
-
     _anchoredAdaptiveAd = BannerAd(
-      // TODO: replace these test ad units with your own ad unit.
       adUnitId: _adUnitId,
       size: size,
       request: AdRequest(),
@@ -153,6 +157,7 @@ class _AnimalSelectState extends State<AnimalSelect> {
   }
 
   Widget buildSettingsPopup() {
+
     return Visibility(
       visible: isSettingsVisible,
       child: Positioned(
@@ -176,7 +181,7 @@ class _AnimalSelectState extends State<AnimalSelect> {
                     ? "assets/Setting/Sound Off.png"
                     : "assets/Setting/Sound_On .png",
                 onTap: () {
-
+                _assetsAudioPlayer.playOrPause();
                 },
               ),
               CustomeCon(

@@ -7,6 +7,7 @@ import 'package:new_pro/utils/Notification/notifcation_helper.dart';
 import 'package:new_pro/utils/Payment/upi_payment.dart';
 import 'package:new_pro/view/Home_Screen.dart';
 import 'package:new_pro/view/Splash_Screen.dart';
+import 'package:new_pro/view/Widget/music.dart';
 import 'package:new_pro/view/theme_select_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
       title: "Slicing",
       initialRoute: "/",
       getPages: [
-        GetPage(name: "/", page: () => Splash()),
+        GetPage(name: "/", page: () => Music()),
         GetPage(name: "/home", page: () => Home()),
         GetPage(name: "/animal", page: () => AnimalSelect()),
         GetPage(name: "/payment", page: () => Payment(),

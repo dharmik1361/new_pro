@@ -105,166 +105,197 @@ class Forest extends StatelessWidget {
                 Align(
                   alignment: Alignment.topLeft,
                   child: SizedBox(
-                    height: 410,
-                    width: 100,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Align(
-                          alignment:
-                          const AlignmentDirectional(-0.7, -0.1),
-                          child: InkWell(
-                            onTap: () {
-                              Get.back();
-                            },
-                            child: Image.asset(
-                              "assets/Setting/Arrowback.png",
-                              height: 40,
-                              width: 40,
+                      height: 410,
+                      width: 100,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Align(
+                            alignment: const AlignmentDirectional(-0.7, -0.1),
+                            child: InkWell(
+                              onTap: () {
+                                Get.back();
+                              },
+                              child: Image.asset(
+                                "assets/Setting/Arrowback.png",
+                                height: 40,
+                                width: 40,
+                              ),
                             ),
                           ),
-                        ),
-                        // const SizedBox(height: 7,),
-                        InkWell(
-                          onTap: () => buttonController.previousPage(
-                            duration: const Duration(milliseconds: 200),
-                            curve: Curves.linear,
-                          ),
-                          child: Align(
-                            alignment:
-                            const AlignmentDirectional(-0.12, 0),
-                            child: Image.asset(
-                              "assets/Game/Up.png",
-                              height: 38,
-                              width: 38,
+                          // const SizedBox(height: 7,),
+                          InkWell(
+                            onTap: () => buttonController.previousPage(
+                              duration: const Duration(milliseconds: 200),
+                              curve: Curves.linear,
+                            ),
+                            child: Align(
+                              alignment: const AlignmentDirectional(-0.12, 0),
+                              child: Image.asset(
+                                "assets/Game/Up.png",
+                                height: 38,
+                                width: 38,
+                              ),
                             ),
                           ),
-                        ),
-                        // SizedBox(height: 30,),
-                        FutureBuilder<List<Map<String, dynamic>>>(
-                          future: Future.delayed(const Duration(milliseconds: 100), () {
-                            return DbHelper.dbHelper.getForestImageData(catId);
-                          }),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              // Display loading indicator while waiting for data
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            } else if (snapshot.hasError) {
-                              // Display error message if data fetching fails
-                              return Text('Error: ${snapshot.error}');
-                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                              // Display a message if data is empty
-                              return const Center(
-                                child: Text('No data available'),
-                              );
-                            } else {
-                              // Data fetched successfully, display carousel slider
-                              List<Map<String, dynamic>> forestImage = snapshot.data!;
-                              return CarouselSlider.builder(
-                                itemCount: forestImage.length,
-                                itemBuilder: (context, index, realIndex) {
-                                  final Uint8List imageBytes = forestImage[index]["Image"];
-                                  final int ID = forestImage[index]["animalId"];
-                                  final String date = forestImage[index]["Date"];
+                          // SizedBox(height: 30,),
+                          ValueListenableBuilder(
+                            valueListenable: myController
+                                .refresshNotifier,
+                            builder: (context, value, child) {
+                              return ValueListenableBuilder(
+                                valueListenable: myController
+                                    .refresshNotifier,
+                                builder: (context, value, child) {
+                                  return FutureBuilder<List<Map<String, dynamic>>>(
+                                    future: Future.delayed(
+                                        const Duration(milliseconds: 100), () {
+                                      return DbHelper.dbHelper
+                                          .getForestImageData(catId);
+                                    }),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        // Display loading indicator while waiting for data
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      } else if (snapshot.hasError) {
+                                        // Display error message if data fetching fails
+                                        return Text('Error: ${snapshot.error}');
+                                      } else if (!snapshot.hasData ||
+                                          snapshot.data!.isEmpty) {
+                                        // Display a message if data is empty
+                                        return const Center(
+                                          child: Text('No data available'),
+                                        );
+                                      } else {
+                                        // Data fetched successfully, display carousel slider
+                                        List<Map<String, dynamic>> forestImage =
+                                        snapshot.data!;
+                                        return CarouselSlider.builder(
+                                          itemCount: forestImage.length,
+                                          itemBuilder: (context, index, realIndex) {
+                                            final Uint8List imageBytes =
+                                            forestImage[index]["Image"];
+                                            final int ID =
+                                            forestImage[index]["animalId"];
+                                            final String date =
+                                            forestImage[index]["Date"];
 
-                                  return Draggable(
-                                    data: imageBytes,
-                                    feedback: CircleAvatar(
-                                      backgroundImage: AssetImage("assets/Game/animal image.png"),
-                                      radius: 45,
-                                      child: Image.memory(
-                                        imageBytes,
-                                        fit: BoxFit.contain,
-                                        width: 80,
-                                        height: 80,
-                                      ),
-                                    ),
-                                    onDragCompleted: () {
-                                      controller.Dragimage(
-                                        imageBytes,
-                                        forestImage[index]['Title'],
-                                        "",
-                                        ID,
-                                      );
-                                      controller.DLanId.value;
-                                    },
-                                    child: GestureDetector (
-                                      onTap: () async {
-                                        if (index != 0 && index != 1 && index != 2) {
-                                          if (date != DateFormat('yyyy-MM-dd').format(DateTime.now())) {
-                                            adManager.showRewardedAd();
-                                            controller.updateForestDate(ID,(){
-                                              controller.update();
-                                            });
-                                          }
-                                        }
-                                      },
-                                      child: Stack(
-                                        children: [
-                                          CircleAvatar(
-                                            backgroundImage: const AssetImage("assets/Game/animal image.png"),
-                                            radius: 45,
-                                            child: Image.memory(
-                                              imageBytes,
-                                              fit: BoxFit.contain,
-                                              width: 70,
-                                              height: 70,
-                                            ),
-                                          ),
-                                          if (index != 0 && index != 1 && index != 2)
-                                            if (date != DateFormat('yyyy-MM-dd').format(DateTime.now()))
-                                              Positioned(
-                                                top: MediaQuery.of(context).size.height * 0.04,
-                                                left: MediaQuery.of(context).size.width * 0.03,
-                                                child: const Icon(
-                                                  Icons.lock,
-                                                  size: 40,
-                                                  color: Colors.white,
+                                            return Draggable(
+                                              data: imageBytes,
+                                              feedback: CircleAvatar(
+                                                backgroundImage: AssetImage(
+                                                    "assets/Game/animal image.png"),
+                                                radius: 45,
+                                                child: Image.memory(
+                                                  imageBytes,
+                                                  fit: BoxFit.contain,
+                                                  width: 80,
+                                                  height: 80,
                                                 ),
                                               ),
-                                        ],
-                                      ),
-                                    ),
+                                              onDragCompleted: () {
+                                                controller.Dragimage(
+                                                  imageBytes,
+                                                  forestImage[index]['Title'],
+                                                  "",
+                                                  ID,
+                                                );
+                                                controller.DLanId.value;
+                                              },
+                                              child: GestureDetector(
+                                                onTap: () async {
+                                                  if (index != 0 &&
+                                                      index != 1 &&
+                                                      index != 2) {
+                                                    if (date !=
+                                                        DateFormat('yyyy-MM-dd')
+                                                            .format(DateTime.now())) {
+                                                      adManager.showRewardedAd();
+                                                      controller.updateForestDate(ID,
+                                                              () {
+                                                            controller.update();
+                                                            myController.toggletherefresh();
+                                                          });
+                                                    }
+                                                  }
+                                                },
+                                                child: Stack(
+                                                  children: [
+                                                    CircleAvatar(
+                                                      backgroundImage: const AssetImage(
+                                                          "assets/Game/animal image.png"),
+                                                      radius: 45,
+                                                      child: Image.memory(
+                                                        imageBytes,
+                                                        fit: BoxFit.contain,
+                                                        width: 70,
+                                                        height: 70,
+                                                      ),
+                                                    ),
+                                                    if (index != 0 &&
+                                                        index != 1 &&
+                                                        index != 2)
+                                                      if (date !=
+                                                          DateFormat('yyyy-MM-dd')
+                                                              .format(DateTime.now()))
+                                                        Positioned(
+                                                          top: MediaQuery.of(context)
+                                                              .size
+                                                              .height *
+                                                              0.04,
+                                                          left: MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                              0.03,
+                                                          child: const Icon(
+                                                            Icons.lock,
+                                                            size: 40,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          carouselController: buttonController,
+                                          options: CarouselOptions(
+                                            scrollDirection: Axis.vertical,
+                                            viewportFraction: 0.35,
+                                            enlargeFactor: 0.3,
+                                            enlargeCenterPage: true,
+                                            height: 273,
+                                            initialPage: 1,
+                                          ),
+                                        );
+                                      }
+                                    },
                                   );
-                                },
-                                carouselController: buttonController,
-                                options: CarouselOptions(
-                                  scrollDirection: Axis.vertical,
-                                  viewportFraction: 0.35,
-                                  enlargeFactor: 0.3,
-                                  enlargeCenterPage: true,
-                                  height: 273,
-                                  initialPage: 1,
-                                ),
-                              );
-                            }
-                          },
-                        ),
+                                },);
+                            },),
 
-
-                        InkWell(
-                          onTap: () => buttonController.nextPage(
-                            duration: const Duration(milliseconds: 200),
-                            curve: Curves.linear,
-                          ),
-                          child: Align(
-                            alignment:
-                            const AlignmentDirectional(-0.12, 0),
-                            child: Image.asset(
-                              "assets/Game/Down.png",
-                              height: 38,
-                              width: 38,
+                          InkWell(
+                            onTap: () => buttonController.nextPage(
+                              duration: const Duration(milliseconds: 200),
+                              curve: Curves.linear,
+                            ),
+                            child: Align(
+                              alignment: const AlignmentDirectional(-0.12, 0),
+                              child: Image.asset(
+                                "assets/Game/Down.png",
+                                height: 38,
+                                width: 38,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 2,
-                        ),
-                      ],
-                    )
-                  ),
+                          const SizedBox(
+                            height: 2,
+                          ),
+                        ],
+                      )),
                 ),
                 Positioned(
                   bottom: 0,
@@ -374,7 +405,6 @@ class Forest extends StatelessWidget {
                                                               builder: (context,
                                                                   languageChanged,
                                                                   child) {
-                                                                // Rebuild the description section when language changes
                                                                 return FutureBuilder(
                                                                   future: Future.delayed(
                                                                       const Duration(
@@ -436,6 +466,7 @@ class Forest extends StatelessWidget {
                                                         )),
                                                   )
                                                 : Container(),
+
                                           ],
                                         ),
                                       ),
