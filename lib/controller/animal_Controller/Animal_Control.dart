@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
 import '../../database/db_helper.dart';
 import '../../model/Category_wise_animal_model/api_model.dart';
 import '../../model/Category_wise_animal_model/cat_animal_api.dart';
@@ -17,6 +15,7 @@ class ForestController extends GetxController {
   String decodedcat = "";
   final int catId;
   final Uint8List Image;
+
   ForestController({required this.catId, required this.Image});
 
   @override
@@ -151,6 +150,8 @@ class ForestController extends GetxController {
     update();
   }
 
+
+
   void Datbaseimage() async {
     forestImage = await DbHelper.dbHelper.getForestImageData(catId);
     update();
@@ -172,14 +173,13 @@ class ForestController extends GetxController {
     update();
   }
 
-
   void changeLanguage(int newLanId) {
     DLanId.value = newLanId;
     update();
   }
 
-  void Dragimage(
-      Uint8List? imageBytes, String title, String description, int DesId) async {
+  void Dragimage(Uint8List? imageBytes, String title, String description,
+      int DesId) async {
     droppedImage.value = imageBytes;
     droppedTitle.value = title;
     droppedDescription.value = description;
@@ -187,12 +187,14 @@ class ForestController extends GetxController {
     update();
   }
 
+
   final categories = List<CatId>.empty().obs;
   final droppedImage = Rx<Uint8List?>(null);
   final droppedTitle = Rx<String>("");
   List<Map<String, dynamic>> forestImage = [];
   final desc = Rx<List<Map<String, dynamic>>>([]);
   final droppedDescription = Rx<String>("");
+  final date = Rx<String>("");
   final Descrip = Rx<String>("");
   final isDataLoaded = false.obs;
   final progressBarValue = 0.obs;

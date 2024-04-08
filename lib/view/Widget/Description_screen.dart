@@ -14,7 +14,7 @@ class NewScreen extends StatelessWidget {
         backgroundColor: Color(0xffB44915),
         title: Text(title,style: TextStyle(color: Colors.white),),
         leading: IconButton(onPressed: (){
-          Get.back();
+          Navigator.pop(context);
         },icon: Image.asset("assets/Setting/Arrowback.png")),
       ),
       body: ListView(children: [

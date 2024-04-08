@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:new_pro/database/db_helper.dart';
+import 'package:new_pro/model/Animal_model/API_model.dart';
+import 'package:new_pro/view/theme_select_page.dart';
 import 'package:status_bar_control/status_bar_control.dart';
 
 import '../controller/API_Controller/Category_api.dart';
@@ -192,7 +194,7 @@ class _HomeState extends State<Home> {
                     if (isLoading)
                     InkWell(
                       onTap: () async {
-                        Get.toNamed("/animal");
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AnimalSelect(),));
                       },
                       child: Container(
                         height: 120,
