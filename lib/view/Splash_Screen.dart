@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:new_pro/view/Home_Screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Splash extends StatefulWidget {
@@ -18,11 +19,11 @@ class _SplashState extends State<Splash> {
     checkFirstTime().then((firstTime) {
       if (firstTime) {
         Timer(const Duration(seconds: 6), () {
-          Get.toNamed("/home");
+          Navigator.push(context,MaterialPageRoute(builder: (context) => Home(),));
           setFirstTimeFlag();
         });
       } else {
-        Get.toNamed("/home");
+        Navigator.push(context,MaterialPageRoute(builder: (context) => Home(),));
       }
     });
   }

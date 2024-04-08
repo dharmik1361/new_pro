@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_intro/flutter_intro.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
@@ -29,8 +30,8 @@ class _AnimalSelectState extends State<AnimalSelect> {
   String settingImageAsset = "assets/Setting/Setting .png";
   final RxBool isSoundOn = true.obs;
   final RxBool isNotificationOn = true.obs;
-  bool isSoundPlaying = false;
-  late AssetsAudioPlayer _assetsAudioPlayer;
+  bool isPlaying = false;
+  late AssetsAudioPlayer assetsAudioPlayer;
   late ADSHelp adsInstance;
   List<Map<String, dynamic>> catImage = [];
   final AdManager _adManager = AdManager();
@@ -54,12 +55,11 @@ class _AnimalSelectState extends State<AnimalSelect> {
     adsInstance = ADSHelp.AdsHelp;
     _adManager.loadInterstitialAd();
     CatData();
-    _assetsAudioPlayer = AssetsAudioPlayer();
-    _assetsAudioPlayer.open(
-      Audio("assets/music/gameappsound.mp3"),
+    assetsAudioPlayer = AssetsAudioPlayer.newPlayer();
+    assetsAudioPlayer.open(
+      Audio("assets/m2/gameappsound.mp3"),
       autoStart: true,
     );
-    _assetsAudioPlayer.play();
   }
 
   Future<void> _loadAd() async {
@@ -177,11 +177,14 @@ class _AnimalSelectState extends State<AnimalSelect> {
             children: [
               const SizedBox(width: 0.7),
               CustomeCon(
-                imageAsset: isSoundPlaying
+                imageAsset: isPlaying
                     ? "assets/Setting/Sound Off.png"
                     : "assets/Setting/Sound_On .png",
                 onTap: () {
-                _assetsAudioPlayer.playOrPause();
+                assetsAudioPlayer.playOrPause();
+                setState(() {
+                  isPlaying = !isPlaying;
+                });
                 },
               ),
               CustomeCon(
@@ -315,9 +318,14 @@ class _AnimalSelectState extends State<AnimalSelect> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Forest(
-                              catId: modifiedId,
-                              imageBytes: catImage[index]['image4'],
+                            builder: (context) => Intro(
+                              padding: EdgeInsets.zero,
+                              borderRadius: const BorderRadius.all(Radius.circular(4)),
+                              maskColor: const Color.fromRGBO(0, 0, 0, .6),
+                              child: Forest(
+                                catId: modifiedId,
+                                imageBytes: catImage[index]['image4'],
+                              ),
                             ),
                           ),
                         );
@@ -328,9 +336,14 @@ class _AnimalSelectState extends State<AnimalSelect> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Forest(
-                            catId: modifiedId,
-                            imageBytes: catImage[index]['image4'],
+                          builder: (context) => Intro(
+                            padding: EdgeInsets.zero,
+                            borderRadius: const BorderRadius.all(Radius.circular(4)),
+                            maskColor: const Color.fromRGBO(0, 0, 0, .6),
+                            child: Forest(
+                              catId: modifiedId,
+                              imageBytes: catImage[index]['image4'],
+                            ),
                           ),
                         ),
                       );
@@ -507,6 +520,7 @@ class _AnimalSelectState extends State<AnimalSelect> {
   @override
   void dispose() {
     _anchoredAdaptiveAd?.dispose();
+    assetsAudioPlayer.dispose();
     super.dispose();
   }
 }

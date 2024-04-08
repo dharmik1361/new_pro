@@ -50,6 +50,9 @@ dependencies:
   in_app_purchase:
   status_bar_control:
   intl:
+  tutorial_coach_mark: ^1.2.11
+  app_tutorial: ^1.0.6
+  flutter_intro: ^3.0.4
 
 dev_dependencies:
   flutter_test:
@@ -82,7 +85,7 @@ flutter:
     - assets/Setting/
     - assets/Setting/InnerBG/
     - assets/music/sound.mp3
-    - assets/music/gameappsound.mp3
+    - assets/m2/gameappsound.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
